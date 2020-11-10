@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+  <h1>This is index </h1>
+
+
+  
+
+  <form id="message-form">
+  	<input type="text" name="message" id="message" required>
+  	<input type="submit" value="Send" class="btn">
+  </form>
+
+  <form id="clear">
+  	<input type="submit" value="Clear" class="btn1">
+  </form>
+      <ul id="message-list">
+  	<li></li>
+  	  <div id="buttoncreator"></div>
+  </ul>
+
+
+ 
+
+
+
+
+<script>
+	console.log(window.location)
+
+	var loc = (window.location)
+	
+	var wsStart = 'ws://' 
+	if (loc.protocol == "https:"){
+		wsStart = 'wss://'
+	}
+	var endpoint = wsStart + window.location.host + window.location.pathname
+	var socket = new WebSocket(endpoint)
+
+
+	socket.onmessage = function(e){
+		console.log("message", e);
+		const ul = document.getElementById('message-list')
+		var li = document.createElement('li')
+		if ((event.data).search("#")==-1){
+			li.append(document.createTextNode(event.data))
+			ul.prepend(li);
+	       }
+	    if ((event.data).search("#")!=-1){
+	    	var choices = (event.data).split("#")
+	    	var str = ''
+
+	    		choices.forEach(function(choice) {
+	    			str+='<input type="submit" value="'+choice+'" class="btn1">';
+	    		}); 
+                console.log(str)
+	    		document.getElementById("buttoncreator").innerHTML = str;
+			
+	       }
+	}
+
+
+	socket.onopen = function(e){
+		console.log("open", e)
+		socket.send("Thanks for connecting");
+	}
+
+
+	socket.onerror = function(e){
+		console.log("error", e)
+	}
+
+
+	socket.onclose = function(e){
+		console.log("close", e)
+	}
+
+
+	const messageForm = document.getElementById("message-form")
+	messageForm.addEventListener('submit', sendMessage)
+	function sendMessage(e){
+		if (e.preventDefault) e.preventDefault();
+		socket.send(document.getElementById('message').value);
+		messageForm.reset()
+		return false;
+
+	}
+
+
+	
+
+
+
+</script>
+</body>
+</html>

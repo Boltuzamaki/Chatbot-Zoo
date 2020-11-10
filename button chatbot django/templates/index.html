@@ -13,31 +13,16 @@
 <body>
   <h1>Hey I am a chatbot</h1>
 
+<div class="d-flex justify-content-lg-left p-2">
+<div id="message-list"  class="p-3 mb-2 bg-warning text-dark text-right rounded-top">
+</div>
+</div>
 
-  
-
-  <form id="message-form">
-  	<input type="text" name="message" id="message" required>
-  	<input type="submit" value="Send" class="btn btn-primary btn-lg">
-  </form>
-
-  <form id="clear">
-  	<input type="submit" value="Clear" class="btn btn-primary btn-lg">
-  </form>
-      <ul id="message-list" class="list-group-item list-group-item-primary"></>
-  	<li ></li>
-  	  <div id="buttoncreator"></div>
-  </ul>
+<div id="buttoncreator"></div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
  
-<script type="text/javascript">
-	$("button").click(function() {
-	    var fired_button = $(this).val();
-	    alert(fired_button);
-	});
-</script>
 
 
 
@@ -58,11 +43,13 @@
 
 	socket.onmessage = function(e){
 		console.log("message", e);
-		const ul = document.getElementById('message-list')
-		var li = document.createElement('li')
+		const newline = document.getElementById('message-list')
+		var li = document.createElement('div')
 		if ((event.data).search("#")==-1){
 			li.append(document.createTextNode(event.data))
-			ul.prepend(li);
+			newline.append(li);
+			console.log(li);
+			console.log(newline);
 	       }
 	    if ((event.data).search("#")!=-1){
 	    	var choices = (event.data).split("#")
@@ -81,7 +68,7 @@
 
 	socket.onopen = function(e){
 		console.log("open", e)
-		socket.send("Thanks for connecting");
+		socket.send("hello");
 	}
 
 
@@ -95,15 +82,13 @@
 	}
 
 
-	const messageForm = document.getElementById("message-form")
-	messageForm.addEventListener('submit', sendMessage)
-	function sendMessage(e){
-		if (e.preventDefault) e.preventDefault();
-		socket.send(document.getElementById('message').value);
-		messageForm.reset()
-		return false;
+</script>
 
-	}
+<script> 
+
+	$(document).on('click', '.btn', function(){
+    socket.send( $(this).attr('id') );
+    });
 </script>
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

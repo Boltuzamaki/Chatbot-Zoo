@@ -4,8 +4,10 @@ import json
 from channels.consumer import AsyncConsumer
 import time
 
+chat_num = 0
+
 class ChatConsumer(AsyncConsumer):
-   
+
 
     async def websocket_connect(self, event):
         await self.send({
@@ -13,19 +15,31 @@ class ChatConsumer(AsyncConsumer):
     })
         print("Connected", event)
 
+
+
+
+
+
     async def websocket_receive(self, event):
-        chatmap = {"hello": ["what is the proble#", "wanna hear song#", "exit"]}
+        global chat_num
+        chatmap = {"hello": ["what is the problem#", "wanna hear song#", "exit"],
+                   "what is the problem" : ["pc not working#", "Hell no"],
+                   " wanna hear song":["yes", "no"]
+        }
 
         await self.send({
 	    	"type" : "websocket.send",
 	    	'text' : event.get('text'),
-	})  
+	})    
+        time.sleep(2)
         try:
-           value_dict = chatmap[event["text"]]
-           
-           value_dict = " ".join(value_dict)
-           print(value_dict)
-           await self.send({
+          
+   
+          value_dict = chatmap[event["text"]]
+          value_dict = " ".join(value_dict)
+          print(value_dict)
+          print(chat_num)
+          await self.send({
 	    	"type" : "websocket.send",
 	    	'text' : value_dict,
 	})  
@@ -33,8 +47,18 @@ class ChatConsumer(AsyncConsumer):
            print( str(e) )
 
 
+
         
         print("receive", event["text"])
+
+    
+
+
+
+
+
+
+
 
     async def websocket_disconnect(self, event):
         print("disconnetced",event)
